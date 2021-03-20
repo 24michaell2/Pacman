@@ -8,9 +8,7 @@
 
     <style>
 
-        * {
-          /*outline: 1px solid blue;*/
-        }
+        
 
         .score
         {
@@ -111,31 +109,16 @@
     // pacman = 5
     // ghost1 = 10
 
-var tid = setInterval(mycode, 2000);
-var count = 1
 
-var tid = setTimeout(mycode, 2000);
-var count = 1
-    function mycode()
-    {
-        if(count == 5)
-        {
-            abortTimer()
-        }
-        else
-        {
-            console.log('e')
-            count++
-        }
-    }
+    
 
+    var aboveGhost;
+    var belowGhost;
+    var leftGhost;
+    var rightGhost;
+    var ghost;
 
-    function abortTimer() 
-    { 
-        clearTimeout(tid);
-    }
-
-
+    var ghostway;
     var score = 0;
     var map;
     
@@ -183,7 +166,7 @@ var count = 1
             x: 6,
             y: 4
         }
-
+        
         function chooseMap()
         {
             var random = Math.floor(Math.random() * 4);
@@ -192,14 +175,30 @@ var count = 1
                 case 1:
                     map = map1
                     console.log(random)
+
+                    ghost = {
+                        x: 11,
+                        y: 4
+                    }
+
                     break;
                 case 2:
                     map = map2
                     console.log(random)
+
+                    ghost = {
+                        x: 11,
+                        y: 6
+                    }
                     break;
                 case 3:
                     map = map3
                     console.log(random)
+
+                    ghost = {
+                        x: 11,
+                        y: 6
+                    }
                     break;
 
 
@@ -209,6 +208,7 @@ var count = 1
 
     function drawWorld(map)
     {
+        ghostMove()
         document.getElementById('world').innerHTML = ""
         for(var y = 0; y < map.length; y++)
         {
@@ -236,6 +236,7 @@ var count = 1
                     document.getElementById('world').innerHTML += "<div class='ghost'></div>"
                 }
                 
+                
             }
            document.getElementById('world').innerHTML += "<br>"
         }
@@ -247,9 +248,161 @@ var count = 1
 
     document.onkeydown = function(e){
         if(e.keyCode == 65)
+        { 
+           goLeft()   
+        }
+        else if(e.keyCode == 68)
         {
-            
-            if(map[pacman.y][pacman.x - 1] == 2)
+            goRight()
+        }
+        else if(e.keyCode == 87)
+        {
+           //up
+           goUp()
+
+        }
+        else if(e.keyCode == 83)
+        {
+            //down
+            goDown()
+        }
+
+
+        drawWorld(map)
+    }    
+
+    
+    chooseMap()    
+    drawWorld(map)
+    myCode()
+
+
+    function ghostMove()
+    {
+        console.log(ghost.x)
+        console.log(ghost.y)
+        //ghostWay = Math.floor(Math.random() * 4);
+        ghostWay = 1
+        aboveGhost = {
+            x: ghost.x,
+            y: ghost.y - 1
+        }
+
+        belowGhost = {
+            x: ghost.x,
+            y: ghost.y + 1
+        }
+
+        rightGhost = {
+            x: ghost.x + 1,
+            y: ghost.y
+        }
+
+        leftGhost = {
+            x: ghost.x - 1,
+            y: ghost.y
+        }
+
+        console.log(aboveGhost.x)
+        console.log(aboveGhost.y)
+        
+
+        switch(ghostWay)
+        {
+            case 1:
+                switch(map[aboveGhost.x][aboveGhost.y])
+                {
+                    case 1:
+                        ghostWay = Math.floor(Math.random() * 4);
+                        break;
+                    case 5:
+                        map[pacman.y][pacman.x] = 10;
+                        document.getElementById('winlose').innerHTML += '<h2>GAME OVER</h2>'
+                        document.getElementById('winlose').innerHTML += '<br>'
+                        document.getElementById('winlose').innerHTML += "<h5>Pro tip: don't touch the ghost</h5>"
+                        pacman.x = 90
+                        pacman.y = 90
+                        count = 2
+                        break;
+                    default: 
+                        map[aboveGhost.x][aboveGhost.y] = 10
+                        ghost.y = ghost.y - 1
+                        break;
+                }
+                break;
+            case 2:
+                switch(map[belowGhost.x][belowGhost.y])
+                    {
+                        case 1:
+                            ghostWay = Math.floor(Math.random() * 4);
+
+                            break;
+                        case 5:
+                            map[pacman.y][pacman.x] = 10;
+                            document.getElementById('winlose').innerHTML += '<h2>GAME OVER</h2>'
+                            document.getElementById('winlose').innerHTML += '<br>'
+                            document.getElementById('winlose').innerHTML += "<h5>Pro tip: don't touch the ghost</h5>"
+                            pacman.x = 90
+                            pacman.y = 90
+                            count = 2
+                            break;
+                        default: 
+                            map[belowGhost.x][belowGhost.y] = 10
+                            ghost.y = ghost.y + 1
+                            break;
+                    }
+                    break;
+            case 3:
+                switch(map[leftGhost.x][leftGhost.y])
+                {
+                    case 1:
+                        ghostWay = Math.floor(Math.random() * 4)
+                        break;
+                    case 5:
+                            map[pacman.y][pacman.x] = 10;
+                            document.getElementById('winlose').innerHTML += '<h2>GAME OVER</h2>'
+                            document.getElementById('winlose').innerHTML += '<br>'
+                            document.getElementById('winlose').innerHTML += "<h5>Pro tip: don't touch the ghost</h5>"
+                            pacman.x = 90
+                            pacman.y = 90
+                            count = 2
+                            break;
+                    default:
+                        map[leftGhost.x][leftGhost.y] = 10
+                        ghost.x = ghost.x - 1
+                        break;
+                }
+                break;
+            case 4:
+                switch(map[rightGhost.x][rightGhost.y])
+                    {
+                        case 1:
+                            ghostWay = Math.floor(Math.random() * 4)
+                            break;
+                        case 5:
+                            map[pacman.y][pacman.x] = 10;
+                            document.getElementById('winlose').innerHTML += '<h2>GAME OVER</h2>'
+                            document.getElementById('winlose').innerHTML += '<br>'
+                            document.getElementById('winlose').innerHTML += "<h5>Pro tip: don't touch the ghost</h5>"
+                            pacman.x = 90
+                            pacman.y = 90
+                            count = 2
+                            break;
+                        default:
+                            map[rightGhost.x][rightGhost.y] = 10
+                            ghost.x = ghost.x + 1
+                            break;
+                }
+                break;
+                
+
+        }
+    }
+
+    function goLeft()
+    {
+         
+        if(map[pacman.y][pacman.x - 1] == 2)
            {
                score = score + 10
            }
@@ -277,13 +430,11 @@ var count = 1
                     break;
 
            } 
-           
-            
-        }
-        else if(e.keyCode == 68)
-        {
-            //right
-            if(map[pacman.y][pacman.x + 1] == 2)
+    }
+
+    function goRight()
+    {
+        if(map[pacman.y][pacman.x + 1] == 2)
            {
                score = score + 10
            }
@@ -308,11 +459,11 @@ var count = 1
                     break;
 
            } 
-        }
-        else if(e.keyCode == 87)
-        {
-           //up
-           if(map[pacman.y - 1][pacman.x] == 2)
+    }
+
+    function goUp()
+    {
+    if(map[pacman.y - 1][pacman.x] == 2)
            {
                score = score + 10
            }
@@ -337,12 +488,11 @@ var count = 1
                     break;
 
            }
-
         }
-        else if(e.keyCode == 83)
-        {
-            //down
-            if(map[pacman.y + 1][pacman.x] == 2)
+
+    function goDown()
+    {
+        if(map[pacman.y + 1][pacman.x] == 2)
            {
                score = score + 10
            }
@@ -367,11 +517,8 @@ var count = 1
                     break;
 
            }
-        }
-        drawWorld(map)
-    }    
-    chooseMap()    
-    drawWorld(map)
+    }
+
 
 </script>
 </html>
